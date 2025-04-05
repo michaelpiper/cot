@@ -12,7 +12,7 @@ def parse_args(args: Optional[list] = None):
     
     parser.add_argument(
         "-m", "--mode",
-        choices=["cli", "api", "debug", "unittest", "integrationtest"],
+        choices=["cli", "api", "debug", "unittest", "integrationtest", "train"],
         default="cli",
         help="Execution mode (default: cli)"
     )
@@ -48,6 +48,9 @@ async def main():
     elif args.mode == "unittest":
         import subprocess
         subprocess.run(["python","-m", "cot.scripts.startup.ziva_unittest"], cwd=os.getcwd())
+    elif args.mode == "train":
+        import subprocess
+        subprocess.run(["python","-m", "cot.scripts.data_processing.prepare_intents"], cwd=os.getcwd())
     elif args.mode == "integrationtest":
         pass
     elif args.mode == "api":

@@ -3,9 +3,10 @@ from transformers import BertTokenizer, BertForSequenceClassification, Trainer, 
 from datasets import Dataset
 import json
 import pickle
+import os
 from sklearn.model_selection import train_test_split
-input_file = "../../data/training/intent_dataset.json"
-output_path = "../../data/models/intent_model"
+input_file = os.path.join(os.path.dirname(__file__),"../../../data/training/intent_dataset.json")
+output_path = os.path.normpath(os.path.join(os.path.dirname(__file__),"../../../data/models/intent_model"))
 output_file = f"{output_path}/label_mappings.pkl"
 # Load dataset
 with open(input_file, "r") as f:
@@ -81,4 +82,4 @@ tokenizer.save_pretrained(output_path)
 with open(output_file, "wb") as f:
     pickle.dump({"label_to_id": label_to_id, "id_to_label": id_to_label}, f)
 
-print("Model fine-tuning complete and saved to ./intent_model")
+print(f"Model fine-tuning complete and saved to {output_path}")

@@ -1,0 +1,243 @@
+intent,description,capability
+request_new_account,Request to open a new bank account,Account Opening
+open_savings_account,Request to specifically open a savings account,Account Opening
+open_checking_account,Request to specifically open a checking/current account,Account Opening
+open_fixed_deposit,Request to open a fixed deposit/term deposit account,Account Opening
+inquiry_account_requirements,Asking about requirements for opening an account,Account Opening
+account_opening_eligibility,Checking if customer is eligible to open an account,Account Opening
+minimum_balance_requirements,Inquiring about minimum balance needed for accounts,Account Opening
+account_opening_documentation,Asking about documents needed to open an account,Account Opening
+account_opening_status,Checking status of pending account opening request,Account Opening
+account_opening_timeframe,Asking how long it takes to open an account,Account Opening
+account_opening_verification,Inquiring about verification process for new accounts,Account Opening
+open_joint_account,Request to open a joint account with another person,Account Opening
+open_business_account,Request to open a business/corporate account,Account Opening
+open_student_account,Request to open a student account,Account Opening
+open_foreign_currency_account,Request to open an account in foreign currency,Account Opening
+reactivate_dormant_account,Request to reactivate an inactive/dormant account,Account Reactivation
+account_dormancy_reason,Asking why account became dormant,Account Reactivation
+dormant_account_status,Checking if account is classified as dormant,Account Reactivation
+account_reactivation_requirements,Asking about requirements to reactivate account,Account Reactivation
+account_reactivation_documentation,Inquiring about documents needed for reactivation,Account Reactivation
+account_reactivation_timeframe,Asking how long reactivation process takes,Account Reactivation
+reactivation_process_inquiry,General questions about the reactivation process,Account Reactivation
+dormancy_fee_information,Inquiring about fees related to dormant accounts,Account Reactivation
+account_dormancy_period,Asking after what period an account becomes dormant,Account Reactivation
+reactivation_eligibility_check,Checking if account is eligible for reactivation,Account Reactivation
+restrict_account_access,Request to place restrictions on account,Account Restriction
+account_restriction_reason,Asking why account has been restricted,Account Restriction
+check_account_restrictions,Inquiring about current restrictions on account,Account Restriction
+remove_account_restrictions,Request to remove existing account restrictions,Account Restriction
+account_freeze_request,Request to freeze account temporarily,Account Restriction
+account_freeze_inquiry,Asking about frozen account status,Account Restriction
+restriction_duration_inquiry,Asking how long restrictions will remain,Account Restriction
+account_unblocking_process,Inquiring about process to unblock account,Account Restriction
+restriction_documentation,Asking about documents needed for restriction changes,Account Restriction
+restriction_appeal_process,Inquiring about appealing account restrictions,Account Restriction
+transaction_limit_setting,Request to set transaction limits,Account Restriction
+spending_limit_inquiry,Asking about current spending limits,Account Restriction
+daily_transaction_limit,Inquiring about daily transaction limits,Account Restriction
+check_account_balance,Request to check current account balance,Balance Enquiry
+view_available_balance,Request to see available funds (vs. pending),Balance Enquiry
+view_pending_transactions,Request to see transactions not yet cleared,Balance Enquiry
+balance_breakdown,Request for detailed breakdown of balance components,Balance Enquiry
+account_statement_request,Request for formal account statement,Balance Enquiry
+mini_statement_request,Request for abbreviated recent transaction record,Balance Enquiry
+recent_transactions_inquiry,Asking about latest transactions,Balance Enquiry
+specific_transaction_details,Inquiring about details of a specific transaction,Balance Enquiry
+balance_history_inquiry,Request to view historical balance information,Balance Enquiry
+multiple_account_balances,Request to check balances across multiple accounts,Balance Enquiry
+insufficient_funds_inquiry,Asking why transaction failed due to insufficient funds,Balance Enquiry
+minimum_balance_check,Checking if account meets minimum balance requirements,Balance Enquiry
+account_overview,Request for overview of all account information,Balance Enquiry
+transfer_between_accounts,Request to move money between own accounts,Money Transfer
+domestic_transfer,Request to transfer money within the country,Money Transfer
+international_transfer,Request to send money to international account,Money Transfer
+recurring_transfer_setup,Request to set up regular scheduled transfers,Money Transfer
+one_time_transfer,Request for single immediate transfer,Money Transfer
+transfer_cancellation,Request to cancel a pending transfer,Money Transfer
+transfer_status_inquiry,Checking status of a money transfer,Money Transfer
+transfer_fee_inquiry,Asking about fees for transfers,Money Transfer
+transfer_limit_inquiry,Asking about maximum transfer amounts,Money Transfer
+beneficiary_addition,Request to add new transfer recipient,Money Transfer
+beneficiary_management,Request to modify or delete recipients,Money Transfer
+transfer_recipient_details,Asking for information needed for transfer recipient,Money Transfer
+transfer_confirmation,Confirming details of a transfer,Money Transfer
+scheduled_transfer_setup,Setting up a future-dated transfer,Money Transfer
+transfer_history,Request to view past transfers,Money Transfer
+urgent_transfer_request,Request for expedited/immediate transfer,Money Transfer
+remittance_inquiry,Asking about remittance services,Money Transfer
+forex_rate_inquiry,Inquiring about foreign exchange rates for transfers,Money Transfer
+buy_airtime_self,Request to purchase airtime for own number,Airtime Purchase
+buy_airtime_others,Request to purchase airtime for another number,Airtime Purchase
+airtime_purchase_history,Viewing past airtime purchases,Airtime Purchase
+airtime_transaction_status,Checking status of pending airtime purchase,Airtime Purchase
+airtime_purchase_limit,Asking about maximum airtime purchase amount,Airtime Purchase
+supported_networks_inquiry,Asking which mobile networks are supported,Airtime Purchase
+airtime_purchase_receipt,Request for receipt of airtime purchase,Airtime Purchase
+airtime_purchase_cancellation,Request to cancel pending airtime purchase,Airtime Purchase
+airtime_purchase_fee,Asking about fees for airtime purchases,Airtime Purchase
+recurring_airtime_setup,Setting up regular airtime purchases,Airtime Purchase
+airtime_purchase_failure,Reporting failed airtime purchase,Airtime Purchase
+buy_data_self,Request to purchase data bundle for own number,Data Purchase
+buy_data_others,Request to purchase data for another number,Data Purchase
+data_bundle_options,Asking about available data plans,Data Purchase
+data_plan_inquiry,Requesting details about specific data plans,Data Purchase
+data_purchase_history,Viewing past data purchases,Data Purchase
+data_transaction_status,Checking status of pending data purchase,Data Purchase
+data_purchase_receipt,Request for receipt of data purchase,Data Purchase
+data_purchase_cancellation,Request to cancel pending data purchase,Data Purchase
+recurring_data_setup,Setting up regular data purchases,Data Purchase
+data_bundle_validity,Asking how long data bundles remain valid,Data Purchase
+data_purchase_failure,Reporting failed data purchase,Data Purchase
+electricity_bill_payment,Request to pay electricity bill,Bills Payment
+water_bill_payment,Request to pay water bill,Bills Payment
+cable_tv_subscription,Request to pay for TV subscription,Bills Payment
+internet_bill_payment,Request to pay internet service provider,Bills Payment
+tax_payment,Request to pay taxes,Bills Payment
+school_fees_payment,Request to pay educational fees,Bills Payment
+merchant_bill_payment,Request to pay general merchant bills,Bills Payment
+bill_payment_history,Viewing past bill payments,Bills Payment
+scheduled_bill_payment,Setting up future bill payment,Bills Payment
+recurring_bill_setup,Setting up regular bill payments,Bills Payment
+bill_payment_status,Checking status of pending bill payment,Bills Payment
+bill_payment_receipt,Request for receipt of bill payment,Bills Payment
+bill_validation,Verifying bill details before payment,Bills Payment
+supported_billers_inquiry,Asking which billers can be paid through the system,Bills Payment
+bill_payment_limit,Asking about maximum bill payment amount,Bills Payment
+bill_payment_cancellation,Request to cancel pending bill payment,Bills Payment
+block_lost_card,Request to block card reported as lost,Block Card
+block_stolen_card,Request to block card reported as stolen,Block Card
+temporary_card_block,Request to temporarily deactivate card,Block Card
+permanent_card_block,Request to permanently block card,Block Card
+card_block_status,Checking if card is currently blocked,Block Card
+card_blocking_reason,Asking why card has been blocked,Block Card
+card_replacement_request,Request for new card after blocking,Block Card
+unblock_card,Request to remove block on card,Block Card
+multiple_card_management,Managing multiple cards on same account,Block Card
+block_additional_card,Request to block secondary/supplementary card,Block Card
+card_blocking_confirmation,Confirming card has been successfully blocked,Block Card
+emergency_card_services,Requesting urgent card services,Block Card
+card_security_measures,Inquiring about card security features,Block Card
+full_statement_request,Request for complete account statement,Account Statement
+statement_period_selection,Specifying time period for statement,Account Statement
+statement_delivery_options,Asking about how statements can be delivered,Account Statement
+statement_format_options,Inquiring about available statement formats,Account Statement
+statement_generation_status,Checking if statement has been generated,Account Statement
+recurring_statement_setup,Setting up regular statement delivery,Account Statement
+custom_statement_request,Request for statement with specific parameters,Account Statement
+e_statement_enrollment,Request to receive statements electronically,Account Statement
+statement_frequency_change,Changing how often statements are received,Account Statement
+statement_verification,Verifying authenticity of statement,Account Statement
+statement_delivery_address,Updating address for statement delivery,Account Statement
+past_statement_request,Request for historical statements,Account Statement
+statement_fee_inquiry,Asking about fees for statement services,Account Statement
+file_new_complaint,Submitting a new complaint,Log Complaints
+complaint_status_inquiry,Checking status of submitted complaint,Log Complaints
+complaint_details_addition,Adding more information to existing complaint,Log Complaints
+complaint_escalation,Request to escalate unresolved complaint,Log Complaints
+complaint_resolution_timeframe,Asking how long complaint resolution takes,Log Complaints
+complaint_reference_number,Requesting reference number for tracking,Log Complaints
+complaint_category_selection,Specifying type of complaint,Log Complaints
+previous_complaint_followup,Following up on previously filed complaint,Log Complaints
+complaint_feedback,Providing feedback on complaint handling,Log Complaints
+complaint_modification,Changing details of existing complaint,Log Complaints
+complaint_cancellation,Withdrawing a complaint,Log Complaints
+fraud_report,Reporting suspected fraudulent activity,Log Complaints
+service_quality_complaint,Complaining about service quality,Log Complaints
+transaction_dispute,Disputing a specific transaction,Log Complaints
+unauthorized_transaction_report,Reporting unauthorized account activity,Log Complaints
+find_nearest_atm,Locating closest ATM,ATM/Branch Locator
+find_nearest_branch,Locating closest bank branch,ATM/Branch Locator
+atm_services_inquiry,Asking about services available at ATMs,ATM/Branch Locator
+branch_working_hours,Inquiring about branch operating times,ATM/Branch Locator
+branch_services_inquiry,Asking about services available at branches,ATM/Branch Locator
+atm_availability_check,Checking if specific ATM is operational,ATM/Branch Locator
+branch_contact_information,Requesting contact details for branch,ATM/Branch Locator
+atm_functionality_inquiry,Asking about specific ATM features,ATM/Branch Locator
+branch_manager_contact,Requesting contact with branch manager,ATM/Branch Locator
+branch_appointment_booking,Scheduling visit to branch,ATM/Branch Locator
+atm_withdrawal_limit,Asking about maximum ATM withdrawal amount,ATM/Branch Locator
+atm_deposit_information,Inquiring about ATM deposit services,ATM/Branch Locator
+drive_through_atm_location,Finding ATMs with drive-through service,ATM/Branch Locator
+accessible_atm_location,Finding ATMs with accessibility features,ATM/Branch Locator
+branch_direction_request,Asking for directions to branch,ATM/Branch Locator
+find_banking_agent,Locating nearest banking agent,Agent Locator
+agent_services_inquiry,Asking about services provided by agents,Agent Locator
+agent_working_hours,Inquiring about agent operating times,Agent Locator
+agent_verification,Verifying if person is authorized agent,Agent Locator
+agent_location_details,Requesting specific location of agent,Agent Locator
+agent_transaction_limit,Asking about transaction limits at agents,Agent Locator
+agent_commission_structure,Inquiring about agent fee structure,Agent Locator
+become_banking_agent,Asking how to become a banking agent,Agent Locator
+agent_complaint,Filing complaint about banking agent,Agent Locator
+nearest_agent_direction,Requesting directions to nearest agent,Agent Locator
+agent_rating_inquiry,Asking about agent performance ratings,Agent Locator
+reset_pin_request,Request to reset PIN,Reset PIN
+forgotten_pin_assistance,Help with forgotten PIN,Reset PIN
+pin_change_process,Inquiring about PIN change procedure,Reset PIN
+pin_change_confirmation,Confirming PIN has been changed,Reset PIN
+pin_security_advice,Requesting advice on secure PIN,Reset PIN
+temporary_pin_request,Request for temporary PIN,Reset PIN
+pin_blocked_assistance,Help with PIN that has been blocked,Reset PIN
+pin_delivery_method,Asking how new PIN will be delivered,Reset PIN
+pin_generation_status,Checking status of PIN generation,Reset PIN
+pin_change_at_atm,Instructions for changing PIN at ATM,Reset PIN
+digital_pin_setup,Setting up PIN for digital services,Reset PIN
+new_card_pin_setup,Setting up PIN for new card,Reset PIN
+loan_application_request,Applying for a loan,Loan Request
+loan_eligibility_check,Checking if customer qualifies for loan,Loan Request
+loan_interest_rate_inquiry,Asking about current loan interest rates,Loan Request
+loan_term_options,Inquiring about available loan durations,Loan Request
+loan_amount_calculation,Calculating potential loan amount,Loan Request
+loan_repayment_schedule,Requesting loan repayment details,Loan Request
+loan_application_status,Checking status of loan application,Loan Request
+loan_documentation_requirements,Asking about documents needed for loan,Loan Request
+loan_disbursement_timeframe,Asking when loan funds will be available,Loan Request
+loan_repayment_methods,Inquiring about ways to repay loan,Loan Request
+loan_early_settlement,Request to pay off loan before term ends,Loan Request
+loan_refinancing_options,Asking about restructuring existing loan,Loan Request
+loan_balance_inquiry,Checking remaining loan balance,Loan Request
+loan_statement_request,Requesting statement of loan account,Loan Request
+loan_deferment_request,Asking to postpone loan payments,Loan Request
+loan_collateral_requirements,Inquiring about security needed for loan,Loan Request
+loan_penalty_information,Asking about fees for late payments,Loan Request
+loan_product_comparison,Comparing different loan options,Loan Request
+update_personal_information,Request to change contact details,Account Management
+address_change_request,Updating residential address,Account Management
+phone_number_update,Changing registered phone number,Account Management
+email_update_request,Updating email address,Account Management
+kyc_update_request,Updating Know Your Customer information,Account Management
+personal_details_verification,Verifying personal information accuracy,Account Management
+notification_preferences,Changing alert and notification settings,Account Management
+language_preference_change,Updating preferred language,Account Management
+tax_information_update,Updating tax-related information,Account Management
+signature_update_request,Changing signature on account,Account Management
+employment_details_update,Updating job information,Account Management
+marital_status_update,Changing marital status information,Account Management
+id_document_update,Updating identification documents,Account Management
+biometric_update_request,Updating biometric authentication data,Account Management
+banking_app_installation,Help with installing mobile banking app,Digital Banking
+app_login_assistance,Help with logging into banking app,Digital Banking
+app_navigation_help,Guidance on using banking app features,Digital Banking
+app_update_information,Information about app updates,Digital Banking
+app_troubleshooting,Help with app technical issues,Digital Banking
+app_feature_inquiry,Asking about specific app capabilities,Digital Banking
+app_security_settings,Managing security settings on app,Digital Banking
+app_notification_settings,Managing app notifications,Digital Banking
+app_password_reset,Resetting password for banking app,Digital Banking
+app_biometric_setup,Setting up fingerprint/face login,Digital Banking
+app_device_management,Managing devices registered to app,Digital Banking
+app_transaction_limits,Setting transaction limits on app,Digital Banking
+app_registration_process,Help with registering for app,Digital Banking
+app_deregistration,Removing app registration,Digital Banking
+online_banking_registration,Setting up online banking access,Digital Banking
+online_banking_login_help,Assistance with web banking login,Digital Banking
+password_reset_request,Resetting online banking password,Digital Banking
+security_question_update,Changing security verification questions,Digital Banking
+online_banking_tutorial,Instructions on using online banking,Digital Banking
+online_banking_device_authorization,Authorizing new device for access,Digital Banking
+online_banking_lockout,Help with locked online banking account,Digital Banking
+digital_banking_activation,Activating digital banking services,Digital Banking
+digital_banking_deactivation,Deactivating digital banking services,Digital Banking
+device_authorization_inquiry,Checking authorized devices,Digital Banking

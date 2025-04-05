@@ -1,0 +1,156 @@
+text,intent,capability
+"I want to open a new bank account.",request_new_account,Account Opening
+"Can you help me open a new account?",request_new_account,Account Opening
+"How do I go about opening a new bank account?",request_new_account,Account Opening
+"I need to open a new account with your bank.",request_new_account,Account Opening
+"What’s the process for opening a new bank account?",request_new_account,Account Opening
+"I’d like to apply for a new bank account.",request_new_account,Account Opening
+"Can I open a new account online?",request_new_account,Account Opening
+"Please guide me on how to open a new account.",request_new_account,Account Opening
+"I’m interested in opening a new bank account.",request_new_account,Account Opening
+"What do I need to open a new account?",request_new_account,Account Opening
+"I want to start a new account with your bank.",request_new_account,Account Opening
+"Could you assist me with opening a new account?",request_new_account,Account Opening
+"How can I open a bank account with you?",request_new_account,Account Opening
+"I need assistance in opening a new bank account.",request_new_account,Account Opening
+"Is it possible to open a new account today?",request_new_account,Account Opening
+"I’d like to open a new savings account.",request_new_account,Account Opening
+"Can you tell me how to open a new account?",request_new_account,Account Opening
+"What are the steps to open a new bank account?",request_new_account,Account Opening
+"I want to create a new bank account.",request_new_account,Account Opening
+"Please help me set up a new account.",request_new_account,Account Opening
+"I’m ready to open a new bank account.",request_new_account,Account Opening
+"What documents do I need to open a new account?",request_new_account,Account Opening
+"Can I open a new account over the phone?",request_new_account,Account Opening
+"I’d like to start a new banking relationship with you.",request_new_account,Account Opening
+"How long does it take to open a new account?",request_new_account,Account Opening
+"I want to open an account for my business.",request_new_account,Account Opening
+"Can you walk me through opening a new account?",request_new_account,Account Opening
+"Is there a fee for opening a new account?",request_new_account,Account Opening
+"I’m looking to open a new personal account.",request_new_account,Account Opening
+"What types of accounts can I open?",request_new_account,Account Opening
+"I want to open a checking account.",request_new_account,Account Opening
+"Can I open a joint account with my spouse?",request_new_account,Account Opening
+"Please provide details on opening a new account.",request_new_account,Account Opening
+"What’s required to open a new account?",request_new_account,Account Opening
+"I need to open an account for my child.",request_new_account,Account Opening
+"How do I open a student account?",request_new_account,Account Opening
+"Can I open an account in a foreign currency?",request_new_account,Account Opening
+"I’d like to open a fixed deposit account.",request_new_account,Account Opening
+"What’s the minimum balance to open an account?",request_new_account,Account Opening
+"I want to open a savings account for my family.",request_new_account,Account Opening
+"Can I open multiple accounts at once?",request_new_account,Account Opening
+"Please explain the account opening process.",request_new_account,Account Opening
+"I’m interested in a business account.",request_new_account,Account Opening
+"What happens after I open a new account?",request_new_account,Account Opening
+"I’d like to open a new account for my startup.",request_new_account,Account Opening
+"Can I open an account without visiting a branch?",request_new_account,Account Opening
+"What are the benefits of opening a new account?",request_new_account,Account Opening
+"I want to open a high-interest savings account.",request_new_account,Account Opening
+"Can I open an account for someone else?",request_new_account,Account Opening
+"Please let me know how to proceed with opening an account.",request_new_account,Account Opening
+
+
+
+
+"I want to open a savings account.",open_savings_account,Account Opening
+"Can you help me open a savings account?",open_savings_account,Account Opening
+"How do I open a savings account?",open_savings_account,Account Opening
+"I’d like to apply for a savings account.",open_savings_account,Account Opening
+"What’s the process for opening a savings account?",open_savings_account,Account Opening
+"Can I open a savings account online?",open_savings_account,Account Opening
+"Please guide me on how to open a savings account.",open_savings_account,Account Opening
+"I’m interested in opening a savings account.",open_savings_account,Account Opening
+"What do I need to open a savings account?",open_savings_account,Account Opening
+"I want to start a savings account with your bank.",open_savings_account,Account Opening
+"Could you assist me with opening a savings account?",open_savings_account,Account Opening
+"How can I open a savings account with you?",open_savings_account,Account Opening
+"I need assistance in opening a savings account.",open_savings_account,Account Opening
+"Is it possible to open a savings account today?",open_savings_account,Account Opening
+"Can you tell me how to open a savings account?",open_savings_account,Account Opening
+"What are the steps to open a savings account?",open_savings_account,Account Opening
+"I want to create a new savings account.",open_savings_account,Account Opening
+"Please help me set up a savings account.",open_savings_account,Account Opening
+"I’m ready to open a savings account.",open_savings_account,Account Opening
+"What documents do I need to open a savings account?",open_savings_account,Account Opening
+"Can I open a savings account over the phone?",open_savings_account,Account Opening
+"I’d like to start saving with your bank.",open_savings_account,Account Opening
+"How long does it take to open a savings account?",open_savings_account,Account Opening
+"Can you walk me through opening a savings account?",open_savings_account,Account Opening
+"Is there a fee for opening a savings account?",open_savings_account,Account Opening
+"I’m looking to open a high-interest savings account.",open_savings_account,Account Opening
+"What types of savings accounts do you offer?",open_savings_account,Account Opening
+"Please provide details on opening a savings account.",open_savings_account,Account Opening
+"What’s required to open a savings account?",open_savings_account,Account Opening
+"I need to open a savings account for my child.",open_savings_account,Account Opening
+"How do I open a joint savings account?",open_savings_account,Account Opening
+"Can I open a savings account in a foreign currency?",open_savings_account,Account Opening
+"What’s the minimum balance for a savings account?",open_savings_account,Account Opening
+"I want to open a savings account for my family.",open_savings_account,Account Opening
+"Can I open multiple savings accounts at once?",open_savings_account,Account Opening
+"Please explain the savings account opening process.",open_savings_account,Account Opening
+"What happens after I open a savings account?",open_savings_account,Account Opening
+"Can I open a savings account without visiting a branch?",open_savings_account,Account Opening
+"What are the benefits of a savings account?",open_savings_account,Account Opening
+"I’d like to open a tax-free savings account.",open_savings_account,Account Opening
+"Can I open a savings account for someone else?",open_savings_account,Account Opening
+"Please let me know how to proceed with opening a savings account.",open_savings_account,Account Opening
+"I want to open a savings account for emergency funds.",open_savings_account,Account Opening
+"How do I fund my new savings account?",open_savings_account,Account Opening
+"Can I link my savings account to my checking account?",open_savings_account,Account Opening
+"What interest rate will I earn on a savings account?",open_savings_account,Account Opening
+"I’m interested in a youth savings account.",open_savings_account,Account Opening
+"Can I open a savings account with a small deposit?",open_savings_account,Account Opening
+"Please confirm the requirements for a savings account.",open_savings_account,Account Opening
+
+
+
+"I want to open a checking account.",open_checking_account,Account Opening
+"Can you help me open a checking account?",open_checking_account,Account Opening
+"How do I open a checking account?",open_checking_account,Account Opening
+"I’d like to apply for a checking account.",open_checking_account,Account Opening
+"What’s the process for opening a checking account?",open_checking_account,Account Opening
+"Can I open a checking account online?",open_checking_account,Account Opening
+"Please guide me on how to open a checking account.",open_checking_account,Account Opening
+"I’m interested in opening a checking account.",open_checking_account,Account Opening
+"What do I need to open a checking account?",open_checking_account,Account Opening
+"I want to start a checking account with your bank.",open_checking_account,Account Opening
+"Could you assist me with opening a checking account?",open_checking_account,Account Opening
+"How can I open a checking account with you?",open_checking_account,Account Opening
+"I need assistance in opening a checking account.",open_checking_account,Account Opening
+"Is it possible to open a checking account today?",open_checking_account,Account Opening
+"Can you tell me how to open a checking account?",open_checking_account,Account Opening
+"What are the steps to open a checking account?",open_checking_account,Account Opening
+"I want to create a new checking account.",open_checking_account,Account Opening
+"Please help me set up a checking account.",open_checking_account,Account Opening
+"I’m ready to open a checking account.",open_checking_account,Account Opening
+"What documents do I need to open a checking account?",open_checking_account,Account Opening
+"Can I open a checking account over the phone?",open_checking_account,Account Opening
+"I’d like to start banking with your checking account.",open_checking_account,Account Opening
+"How long does it take to open a checking account?",open_checking_account,Account Opening
+"Can you walk me through opening a checking account?",open_checking_account,Account Opening
+"Is there a fee for opening a checking account?",open_checking_account,Account Opening
+"I’m looking to open a no-fee checking account.",open_checking_account,Account Opening
+"What types of checking accounts do you offer?",open_checking_account,Account Opening
+"Please provide details on opening a checking account.",open_checking_account,Account Opening
+"What’s required to open a checking account?",open_checking_account,Account Opening
+"I need to open a checking account for my business.",open_checking_account,Account Opening
+"How do I open a joint checking account?",open_checking_account,Account Opening
+"Can I open a checking account in a foreign currency?",open_checking_account,Account Opening
+"What’s the minimum balance for a checking account?",open_checking_account,Account Opening
+"I want to open a checking account for my family.",open_checking_account,Account Opening
+"Can I open multiple checking accounts at once?",open_checking_account,Account Opening
+"Please explain the checking account opening process.",open_checking_account,Account Opening
+"What happens after I open a checking account?",open_checking_account,Account Opening
+"Can I open a checking account without visiting a branch?",open_checking_account,Account Opening
+"What are the benefits of a checking account?",open_checking_account,Account Opening
+"I’d like to open a premium checking account.",open_checking_account,Account Opening
+"Can I open a checking account for someone else?",open_checking_account,Account Opening
+"Please let me know how to proceed with opening a checking account.",open_checking_account,Account Opening
+"I want to open a checking account for everyday transactions.",open_checking_account,Account Opening
+"How do I fund my new checking account?",open_checking_account,Account Opening
+"Can I link my checking account to my savings account?",open_checking_account,Account Opening
+"What fees are associated with a checking account?",open_checking_account,Account Opening
+"I’m interested in a student checking account.",open_checking_account,Account Opening
+"Can I open a checking account with a small deposit?",open_checking_account,Account Opening
+"Please confirm the requirements for a checking account.",open_checking_account,Account Opening
