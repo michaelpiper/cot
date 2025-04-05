@@ -172,7 +172,10 @@ class ZiVAEngine(AsyncAIEngine):
         # print(generated_text)
         return generated_text
     async def retrieve_documents(self, query: str):
-        return []
+        return await asyncio.to_thread(
+            lambda text: [embedding.text  for embedding in self.container.rag().retrieve(text) if embedding.score>7],
+            query
+        )
     # Function to handle conversation
     async def handle_conversation(self, conversation: Conversation):
         user_chat = conversation.get_last_chat()

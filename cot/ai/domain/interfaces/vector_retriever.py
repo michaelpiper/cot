@@ -1,7 +1,8 @@
-from typing import Dict, List
+from typing import List
 
 from pymongo import database
 from sentence_transformers import SentenceTransformer
+from ..entities.embedding import RetrievedEmbedding
 
 
 class IVectorRetriever:
@@ -12,7 +13,7 @@ class IVectorRetriever:
     def embed_text(self, text: str) -> List[float]:
         """Generate embeddings for query/documents"""
     
-    def retrieve(self, query: str, top_k: int = 3) -> List[Dict]:
+    def retrieve(self, query: str, top_k: int = 3, **kwargs) -> List[RetrievedEmbedding]:
         """Hybrid search (vector + metadata filtering)"""
 
     def _generate_document_hash(self, text: str, metadata: dict) -> str:

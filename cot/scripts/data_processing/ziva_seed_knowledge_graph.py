@@ -1,11 +1,12 @@
-from neo4j import GraphDatabase
+from ...ai.infrastructure.ziva.rag.knowledge_graph import ZiVAKnowledgeGraph
+from dotenv import load_dotenv
 
+load_dotenv(".env")
 # Initialize connection
-uri = "neo4j://localhost:7687"
-driver = GraphDatabase.driver(uri, auth=("neo4j", "password"))
+knowledge_graph = ZiVAKnowledgeGraph()
 
 def seed_kg_data():
-    with driver.session() as session:
+    with knowledge_graph.driver.session() as session:
         # Clear existing data
         session.run("MATCH (n) DETACH DELETE n")
         

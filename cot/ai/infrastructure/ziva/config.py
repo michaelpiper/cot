@@ -1,6 +1,7 @@
 import os
 
-from cot.ai.infrastructure.ziva.adapters.external.translate import AsyncZivaTranslateAdapter
+from .adapters.external.translate import AsyncZivaTranslateAdapter
+from .rag.retriever import ZiVAVectorRetriever
 
 from .adapters.external.langdetect_adapter import AsyncZiVALangDetectAdapter
 from ...core.adapters.repositories.mongo_multilingual_repo import AsyncMongoMultilingualRepository
@@ -102,4 +103,11 @@ class ZiVAContainer(AsyncContainer):
         AccountOpeningController, 
         request_account_use_case, 
         eligibility_use_case
+    )
+
+
+     # Initialize controller
+    rag = providers.Factory(
+        ZiVAVectorRetriever, 
+        os.getenv("ZIVA_MONGO_URI"), 
     )

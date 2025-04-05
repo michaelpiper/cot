@@ -1,11 +1,12 @@
-from transformers import DistilBertTokenizer, DistilBertForSequenceClassification
+import os
+from transformers import BertTokenizer, BertForSequenceClassification
 import torch
 import pickle
-input_path = "../../data/models/intent_model"
+input_path = os.path.normpath(os.path.join(os.path.dirname(__file__),"../../../data/models/intent_model"))
 input_file = f"{input_path}/label_mappings.pkl"
 # Load the fine-tuned model and tokenizer
-model = DistilBertForSequenceClassification.from_pretrained(input_path)
-tokenizer = DistilBertTokenizer.from_pretrained(input_path)
+model = BertForSequenceClassification.from_pretrained(input_path)
+tokenizer = BertTokenizer.from_pretrained(input_path)
 
 # Load label mappings
 with open(input_file, "rb") as f:
@@ -21,7 +22,7 @@ def predict_intent(text):
     return id_to_label[predicted_class_id]
 
 # Test the model
-test_inputs = ["hi", "check my balance", "12345", "help"]
+test_inputs = ["I want to open a new bank account", "Please guide me on how to open a new account."]
 for text in test_inputs:
     intent = predict_intent(text)
     print(f"Input: {text} -> Predicted Intent: {intent}")

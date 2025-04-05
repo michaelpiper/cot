@@ -20,11 +20,28 @@ class ZiVAKnowledgeGraph(IKnowledgeGraph):
             return [dict(record) for record in result]
     
     def expand_query_context(self, query: str, entities: List[str]) -> Dict:
-        """Enhance query with KG context"""
-        context = {}
+        """Enhance query with KG context and potentially modify the query"""
+        context = {
+            "_original_query": query  # Store the original query without modification
+        }
+        
+        # Expand context by fetching related entities for each provided entity
         for entity in entities:
+            related_services = self.get_related_entities(entity, "HAS_SERVICE")
+            regulations = self.get_related_entities(entity, "GOVERNED_BY")
+            
+            # Store the retrieved context
             context[entity] = {
-                "related_services": self.get_related_entities(entity, "HAS_SERVICE"),
-                "regulations": self.get_related_entities(entity, "GOVERNED_BY")
+                "related_services": related_services,
+                "regulations": regulations
             }
+            
+            # Dynamically enhance the query with additional information based on context
+            if related_services:
+                query += f" AND e.name IN {', '.join([service['name'] for service in related_services])}"
+            if regulations:
+                query += f" AND e.name IN {', '.join([reg['name'] for reg in regulations])}"
+        
+        #return the modified query here if it was enhanced
+        context["_query"] = query
         return context

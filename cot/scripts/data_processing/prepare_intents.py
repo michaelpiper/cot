@@ -1,20 +1,22 @@
 
 from transformers import BertTokenizer, BertForSequenceClassification, Trainer, TrainingArguments
 from datasets import Dataset
-import json
+import csv
 import pickle
 import os
 from sklearn.model_selection import train_test_split
-input_file = os.path.join(os.path.dirname(__file__),"../../../data/training/intent_dataset.json")
+input_file = os.path.join(os.path.dirname(__file__),"../../../data/training/intent_dataset.csv")
 output_path = os.path.normpath(os.path.join(os.path.dirname(__file__),"../../../data/models/intent_model"))
 output_file = f"{output_path}/label_mappings.pkl"
+texts = []
+intents = []
 # Load dataset
-with open(input_file, "r") as f:
-    data = json.load(f)
-
-# Convert dataset to Hugging Face Dataset format
-texts = [x["text"] for x in data]
-intents = [x["intent"] for x in data]
+with open(input_file, mode="r",  newline='', encoding='utf-8') as f:
+    data = csv.DictReader(f)
+    # Convert dataset to Hugging Face Dataset format
+    for x in data: 
+        texts.append(x["text"] )
+        intents.append(x["intent"])
 
 # Create a mapping from intent labels to integers
 intent_labels = list(set(intents))
@@ -53,7 +55,7 @@ training_args = TrainingArguments(
     learning_rate=2e-5,
     per_device_train_batch_size=16,
     per_device_eval_batch_size=16,
-    num_train_epochs=0.8,  # Increase epochs for better fine-tuning
+    num_train_epochs=0.98,  # Increase epochs for better fine-tuning
     weight_decay=0.01,
     save_strategy="epoch",
     save_total_limit=2,
