@@ -1,0 +1,26 @@
+{
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts"
+  },
+  "workspaces":[ 
+    "cot/packages/@cot/*",
+    "cot/interfaces/@cot/*"
+  ],
+  "devDependencies": {
+    "@types/async": "^3.2.24",
+    "@types/express": "^5.0.0",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "~5.8.2"
+  },
+  "dependencies": {
+    "async": "^3.2.6",
+    "axios": "^1.8.4",
+    "csv-parser": "^3.2.0",
+    "express": "^4.21.2",
+    "redis": "^4.7.0",
+    "zeroant-ussd": "^0.0.14"
+  }
+}
