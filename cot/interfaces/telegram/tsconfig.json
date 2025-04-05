@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "module": "CommonJS",
+    "target": "ES6",
+    "strict": true,
+    "rootDir": "./src",    
+    "outDir": "./dist",
+    // "declaration": true,
+    // "declarationDir": "./types",
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "typeRoots": [
+      "./node_modules/@types",
+      "./types"  // Add the custom types folder
+    ]
+  },
+  "include": ["src/**/*", "../tests/**/*", "../jest.config.ts", "../jest.setup.ts"],                        
+  "exclude": ["node_modules", "dist", "../jest.config.ts", "../jest.setup.ts"]    
+}

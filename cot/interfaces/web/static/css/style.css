@@ -1,0 +1,34 @@
+.chat-container {
+    padding: 20px;
+    max-height: 100% - calc(var(--f7-navbar-height) + var(--f7-safe-area-top));
+    height: 100% - calc(var(--f7-navbar-height) + var(--f7-safe-area-top));
+}
+
+.message {
+    padding: 10px;
+    margin: 5px;
+    border-radius: 10px;
+}
+.button-container {
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 10px;
+}
+
+.sent {
+    background-color: #007aff;
+    color: white;
+    align-self: flex-end;
+}
+
+.received {
+    background-color: #f1f1f1;
+    color: black;
+    align-self: flex-start;
+}
+.message-sent a {
+    color: #f1f1f1
+}
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');

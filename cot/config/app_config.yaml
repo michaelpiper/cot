@@ -1,0 +1,8 @@
+# config/app_config.yaml
+multilingual:
+  supported_languages: [en, fr, es, pt, ar]
+  default_locale: en_US
+banking:
+  currency_formats:
+    NG: "₦{amount}"
+    US: "${amount}"

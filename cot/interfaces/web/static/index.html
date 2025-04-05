@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoT Chat</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7/framework7-bundle.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/framework7-icons@5.0.5/css/framework7-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/framework7/framework7-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.5/dist/purify.min.js"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+
+<body>
+    <!-- App Root -->
+    <div id="app">
+        <div class="view view-main">
+            <div class="page" data-name="home">
+               
+
+                <div class="toolbar messagebar">
+                    <div class="toolbar-inner">
+                        <div class="messagebar-area">
+                            <!-- messagebar attachments -->
+                            <div class="messagebar-attachments">...</div>
+                            <!-- messagebar resizable textarea -->
+                            <textarea class="resizable messagebar-textarea"
+                                placeholder="Type your message..."></textarea>
+                        </div>
+                        <a href="#" class="link send-message">Send</a>
+                    </div>
+                    <!-- messagebar sheet -->
+                    <div class="messagebar-sheet">...</div>
+                </div>
+                
+                <div class="page-content">
+                    <div class="navbar">
+                        <div class="navbar-inner">
+                            <div class="title">CoT Chatbot</div>
+                        </div>
+                    </div>
+                    <div class="chat-container">
+                        <!-- Messages List -->
+                        <div class="messages messages-content"></div>
+
+                        <!-- Message Input -->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./js/mackdown.js"></script>
+    <script src="./js/mackdown-render.js"></script>
+    <script src="./js/app.js"></script>
+</body>
+
+</html>
