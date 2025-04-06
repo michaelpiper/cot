@@ -1,5 +1,5 @@
 from typing import Dict, List
-from ... import IKnowledgeGraph
+from ....domain.interfaces.knowledge_graph import IKnowledgeGraph
 
 class CheckTransferRegulationsUseCase:
     def __init__(self, knowledge_graph: IKnowledgeGraph):

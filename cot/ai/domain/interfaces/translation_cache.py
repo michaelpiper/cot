@@ -5,6 +5,9 @@ from ..entities import Translation
 class ITranslator(ABC):
     @abstractmethod
     def translate(self, text: str, target_lang: str, source_lang: Optional[str] = None) -> str: ...
+class IAsyncTranslator(ITranslator):
+    @abstractmethod
+    async def translate(self, text: str, target_lang: str, source_lang: Optional[str] = None) -> str: ...
 
 class ITranslationCache(ABC):
     @abstractmethod
@@ -13,7 +16,7 @@ class ITranslationCache(ABC):
     @abstractmethod
     def set(self, key: str, translation: Translation) -> None: ...
     
-class IAsyncTranslationCache(ABC):
+class IAsyncTranslationCache(ITranslationCache):
     @abstractmethod
     async def get(self, key: str) -> Optional[Translation]: ...
     

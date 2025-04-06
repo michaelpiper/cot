@@ -7,19 +7,22 @@ from .chat import IChatRepository, IAsyncChatRepository
 from .entity import IAsyncEntityRepository, IEntityRepository
 from .ai_engine import IAIEngine, IAsyncAIEngine
 from .translation_cache import ITranslationCache, IAsyncTranslationCache
-from .locale import ILocaleFormatter, ILanguageDetector
+from .locale import ILocaleFormatter, IAsyncLocaleFormatter
 from .genai import IGenAIAdapter, IAsyncGenAIAdapter
 from .account import ICustomerRepository, IAccountRepository, IAccountOpeningUseCase
 from .intent_detector import IIntentDetector
 from .multilingual import (
     ILanguageDetector,
-    ILocaleFormatter,
     ILocalizationRepository,
     ITranslator,
     IAsyncLanguageDetector,
-    IAsyncLocaleFormatter,
     IAsyncLocalizationRepository,
     IAsyncTranslator,
+    ITranslateUseCase,
+    ITranslateTextUseCase,
+    IFindBankingTermsUseCase,
+    ITranslateBankingTermsUseCase,
+    IDetectLanguageUseCase
 )
 from .repository import (
     IFindManyRepository,

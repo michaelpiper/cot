@@ -62,9 +62,9 @@ class AsyncZivaTranslateAdapter(IAsyncTranslator):
         prompt.add_system_content(await self.get_system_prompt())
         prompt.add_user_content(json.dumps({
              "text": request.text,
-                "target_lang": request.target_lang,
-                "source_lang": request.source_lang,
-                "context": request.context 
+            "target_lang": request.target_lang,
+            "source_lang": request.source_lang,
+            "context": request.context 
         }))
         translation = await self.gen_ai.generate(
             prompt,
