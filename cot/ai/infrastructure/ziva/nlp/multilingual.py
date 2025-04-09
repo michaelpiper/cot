@@ -6,7 +6,7 @@ from ....domain.entities.transalation import TranslationRequest
 from ..use_cases.multilingual import *
 
 
-class TranslationHandler:
+class TranslationHandler(ITranslationUseCase):
     def __init__(
         self,
         detect_lang_uc: IDetectLanguageUseCase,
@@ -23,41 +23,34 @@ class TranslationHandler:
 
     def execute(
         self,
-        text: str,
-        fallback_lang: str,
-        target_lang: str,
-        source_lang: Optional[str] = None,
+        request: TranslationRequest,
         supported_languages: List[str] = [],
         banking_terms: Dict[str, Dict[str, str]] = {},
     ) -> str:
-        if not source_lang:
-            source_lang = self.detect_lang_uc.execute(
-                text,
+        if not request.fallback_lang:
+            raise Exception("equest.fallback_lang is required")
+        if not request.source_lang:
+            request.source_lang = self.detect_lang_uc.execute(
+                request.text,
                 supported_languages=supported_languages,
                 banking_terms=banking_terms,
-                fallback=fallback_lang,
+                fallback=request.fallback_lang,
             )
 
-        if source_lang == target_lang:
-            return text
+        if request.source_lang == request.target_lang:
+            return request.text
         # Special handling for amounts
-        translated_text = self.translate_amount_uc.execute(text)
+        translated_text = self.translate_amount_uc.execute(request.text)
         # Translate banking terms first
         detected_banking_terms = self.find_banking_terms_uc.execute(
-            text, target_lang, banking_terms
+            request.text, request.target_lang, banking_terms
         )
         translated_text = self.translate_banking_terms_uc.execute(
-            text, detected_banking_terms, banking_terms
+            request.text, detected_banking_terms, banking_terms
         )
         # Full translation if needed
-        if translated_text == text:
-            translated_text = self.translator_uc.execute(
-                TranslationRequest(
-                    text=text,
-                    source_lang=source_lang,
-                    target_lang=target_lang,
-                )
-            )
+        if translated_text == request.text:
+            translated_text = self.translator_uc.execute(request)
         return translated_text
 
 
@@ -66,14 +59,21 @@ class UserInputHandler:
         self,
         detect_language_uc: OptimizedDetectLanguageUseCase,
         find_banking_terms_uc: FindBankingTermsUseCase,
-        translate_uc: CacheOrTranslateUseCase,
+        translation_uc: ITranslationUseCase,
+        supported_languages: List[Language],
+        banking_terms: dict[str, dict[str, str]],
     ) -> None:
         self.detect_language_uc = detect_language_uc
         self.find_banking_terms_uc = find_banking_terms_uc
-        self.translate_uc = translate_uc
+        self.translation_uc = translation_uc
+        self.supported_languages = supported_languages
+        self.banking_terms = banking_terms
 
     def execute(
-        self, text: str, user_locale: str, banking_terms: Dict[str, Dict[str, str]]
+        self,
+        text: str,
+        user_locale: str,
+        banking_terms: Dict[str, Dict[str, str]],
     ) -> Dict:
         """Full multilingual processing pipeline"""
         detected_lang = self.detect_language_uc.execute(text)
@@ -86,56 +86,59 @@ class UserInputHandler:
         }
 
         if needs_translation:
-            processed["translated_text"] = self.translate_uc.execute(
+            processed["translated_text"] = self.translation_uc.execute(
                 TranslationRequest(
                     text,
                     target_lang=user_locale[:2],
                     source_lang=detected_lang,
+                    supported_languages=self.supported_languages,
+                    banking_terms=self.banking_terms,
                 )
             )
 
         return processed
 
 
-class MultilingualHandler:
+class MultilingualController:
     def __init__(
         self,
-        translator_handler: TranslationHandler,
-        user_input_handler: UserInputHandler,
+        translation_uc: ITranslationUseCase,
+        user_input_uc: IUserInputUseCase,
+        supported_languages: List[Language],
+        locale_settings: Dict[str, LocaleSettings],
+        banking_terms: dict[str, dict[str, str]],
+        fallback_lang: str,
     ):
-        self.translator_handler = translator_handler
-        self.user_input_handler = user_input_handler
-        self.supported_languages = ["en", "fr", "es", "pt", "ar"]
+        self.translation_uc = translation_uc
+        self.user_input_uc = user_input_uc
+        self.supported_languages = supported_languages
         # Locale-specific configurations
-        self.locale_settings = {
-            "en_US": {"currency": "USD", "timezone": "America/New_York"},
-            "en_NG": {"currency": "NGN", "timezone": "Africa/Lagos"},
-            "fr_FR": {"currency": "EUR", "timezone": "Europe/Paris"},
-            "ar_AE": {"currency": "AED", "timezone": "Asia/Dubai"},
-        }
+        self.locale_settings = locale_settings
 
         # Banking term mappings
-        self.banking_terms = {
-            "account": {"en": "account", "fr": "compte", "es": "cuenta"},
-            "transfer": {"en": "transfer", "fr": "virement", "es": "transferencia"},
-        }
+        self.banking_terms = banking_terms
 
-        self.fallback_lang = "en"
+        self.fallback_lang = fallback_lang
 
     def translate(
-        self, text: str, target_lang: str, source_lang: Optional[str] = None
+        self,
+        text: str,
+        target_lang: str,
+        source_lang: Optional[str] = None,
     ) -> str:
-        return self.translator_handler.execute(
-            text,
-            fallback_lang=self.fallback_lang,
-            target_lang=target_lang,
-            source_lang=source_lang,
+        return self.translation_uc.execute(
+            request=TranslationRequest(
+                text,
+                fallback_lang=self.fallback_lang,
+                target_lang=target_lang,
+                source_lang=source_lang,
+                context={},
+            ),
             supported_languages=self.supported_languages,
             banking_terms=self.banking_terms,
-            
         )
 
     def handle_user_input(self, text: str, user_locale: str):
-        return self.user_input_handler.execute(text, user_locale, self.banking_terms)
+        return self.user_input_uc.execute(text, user_locale, self.banking_terms)
 
     # for language in self.supported_languages:

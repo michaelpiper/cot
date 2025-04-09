@@ -35,7 +35,16 @@ async def chat():
     }
 
     return jsonify(response)
-
+# Define the API endpoint
+@app.route("/predict", methods=["POST"])
+async def predict():
+    data = request.json
+    message = data.get("message") 
+    prediction = await asyncio.to_thread(
+                lambda text: engine.container.intent_detector().predict(text),
+                message,
+    )
+    return jsonify({"intent":prediction[0], "confidence": prediction[1]})
 if __name__ == "__main__":
     from . import start_api
     # For development direct execution

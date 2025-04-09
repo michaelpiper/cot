@@ -21,10 +21,10 @@ const API_URL = 'http://localhost:4000'; // Example endpoint (check docs for the
 class AI {
     constructor() {
         // Helper Function to Call Qwen API
-        this.predictAPI = (prompt) => __awaiter(this, void 0, void 0, function* () {
+        this.predictAPI = (message) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const response = yield this.client.post('/predict', {
-                    prompt
+                    message
                 });
                 return response.data;
             }

@@ -22,7 +22,9 @@ from .multilingual import (
     ITranslateTextUseCase,
     IFindBankingTermsUseCase,
     ITranslateBankingTermsUseCase,
-    IDetectLanguageUseCase
+    IDetectLanguageUseCase,
+    ITranslationUseCase,
+    IUserInputUseCase
 )
 from .repository import (
     IFindManyRepository,

@@ -55,7 +55,7 @@ class EntityContext(AsyncContext):
         """
         system_prompt = f"""
         You are an intelligent assistant designed to extract valuable information from user input. Your task is to identify and extract the following details from the user's message:
-        ---
+        --- 
             ### **1. Personal Identification Entities**
             - **First name**  
             - **Last name**  
@@ -223,7 +223,8 @@ class EntityContext(AsyncContext):
             "complaint_category": "value",
             "delivery_method": "value"
         },
-        "notes": "value"
+        "notes": "value",
+        "preferred_lang": "value",
         }, indent=2)
         }
 

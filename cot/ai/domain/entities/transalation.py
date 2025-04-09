@@ -8,6 +8,7 @@ class TranslationRequest:
     text: str
     source_lang: Optional[str]  
     target_lang: str
+    fallback_lang: Optional[str]
     context: Dict = None
 
 @dataclass

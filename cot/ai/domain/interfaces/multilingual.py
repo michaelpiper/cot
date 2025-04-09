@@ -37,11 +37,23 @@ class IAsyncLocalizationRepository[Entity: Dict[str, str]](
     @abstractmethod
     async def get_localized_terms(self, locale: str) -> Entity: ...
 
-
+class IUserInputUseCase:
+    @abstractmethod
+    def execute(
+        self, text: str, user_locale: str, banking_terms: Dict[str, Dict[str, str]]
+    ) -> Dict:...
 class ITranslateUseCase:
     @abstractmethod
     def execute(self, request: TranslationRequest) -> str: ...
-
+class ITranslationUseCase:
+  
+    @abstractmethod
+    def execute(
+        self,
+        request: TranslationRequest,
+        supported_languages: List[str] = [],
+        banking_terms: Dict[str, Dict[str, str]] = {},
+    ) -> str:...
 
 class ITranslateTextUseCase:
     @abstractmethod
