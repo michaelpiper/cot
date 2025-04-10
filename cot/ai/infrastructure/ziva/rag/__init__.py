@@ -1,2 +1,3 @@
 from .knowledge_graph import ZiVAKnowledgeGraph
 from .retriever import ZiVAVectorRetriever
+from .function_dispatcher import FunctionDispatcher

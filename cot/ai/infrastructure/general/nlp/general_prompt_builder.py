@@ -1,9 +1,10 @@
+
 from collections import abc
 from typing import Any, Callable, Optional, Dict, List
-from ....domain.models import Context
+from ....domain.models import PromptBuilder
 import json
 from ... import logger
-class GeneralContext(Context):
+class GeneralPromptBuilder(PromptBuilder):
     def __init__(
         self,
         generator: Callable[[List[Any], Dict], str],
@@ -16,9 +17,9 @@ class GeneralContext(Context):
         **kwargs,
     ):
         """
-        Initialize the Context class with user-specific information.
+        Initialize the PromptBuilder class with user-specific information.
         """
-        super(GeneralContext, self).__init__(generator, **kwargs)
+        super(GeneralPromptBuilder, self).__init__(generator, **kwargs)
         self.name = name if name else "N/A"
         self.location = location if location else "N/A"
         self.email = email if email else "N/A"

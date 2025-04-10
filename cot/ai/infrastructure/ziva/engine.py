@@ -3,14 +3,16 @@ from collections import abc
 import functools
 from typing import List
 
+from ...core.nlp.function_calling_context import FunctionCalllingPromptBuilder
+
 from ...domain.entities.transalation import TranslationRequest
 from ...domain.models import ChatBubble
 from ...domain.models import AsyncAIEngine
 import json
-from ...domain.models import Context
-from ...core.contexts import EntityContext
-from .contexts import ZiVAContext
-from ...core.contexts import BubbleContext
+from ...domain.models import PromptBuilder
+from ...core.nlp import EntityPromptBuilder
+from .nlp.ziva_prompt_builder import ZiVAPromptBuilder
+from ...core.nlp import BubblePromptBuilder
 from ...core.logger import logger
 from ...domain.models import AssistantChat, UserChat
 from ...domain.models import Conversation
@@ -31,23 +33,6 @@ class ZiVAEngine(AsyncAIEngine):
     async def init(self):
         await self.datasource.init()
 
-    CAPABILITIES = [
-        "1️⃣ Account Opening",
-        "2️⃣ Account Reactivation",
-        "3️⃣ Account Restriction",
-        "4️⃣ Balance Enquiry",
-        "5️⃣ Money Transfer",
-        "6️⃣ Airtime Purchase",
-        "7️⃣ Data Purchase",
-        "8️⃣ Bills Payment",
-        "9️⃣ Block Card",
-        "🔟 Account Statement",
-        "🔹 Log Complaints",
-        "🔹 ATM/Branch Locator",
-        "🔹 Agent Locator",
-        "🔹 Reset PIN",
-        "🔹 Loan Request",
-    ]
     documents = [
         """
             ### **Instructions for Handling User Queries**
@@ -105,7 +90,7 @@ class ZiVAEngine(AsyncAIEngine):
             "suggested_actions": self.generate_actions(kg_context),
         }
 
-    def generate_actions(self, context: Context):
+    def generate_actions(self, context: PromptBuilder):
         actions = []
         for entity, data in context.items():
             if "regulations" in data:
@@ -139,27 +124,62 @@ class ZiVAEngine(AsyncAIEngine):
         self, user_input=[], entities: dict = {}, documents: List[str] = []
     ):
         # Create bubble suggestions
-        context = BubbleContext(generator=self.generator, **entities)
+        context = BubblePromptBuilder(generator=self.generator, **entities)
         await context.load_documents(documents)
-        generated_text = await context.generate_text(user_input, self.CAPABILITIES)
+        generated_text = await context.generate_text(
+            user_input, self.container.config.capabilities()
+        )
         # Clean up the generated text to ensure valid JSON
         try:
             # Parse the JSON output
-            bubbles = json.loads(generated_text)
+            bubbles = json.loads(
+                generated_text,
+                parse_float=lambda input: float(input),
+                parse_int=lambda input: int(input),
+            )
         except json.JSONDecodeError:
             # Fallback if the model doesn't return valid JSON
             bubbles = []
         return bubbles
 
+    async def generate_function_calling(
+        self,
+        user_input=[],
+        entities: dict = {},
+        documents: List[str] = [],
+    ):
+        # Create bubble suggestions
+        context = FunctionCalllingPromptBuilder(generator=self.generator, **entities)
+        await context.load_documents(documents)
+        generated_text = await context.generate_text(
+            user_input, [fun for fun in self.container.function_calls()]
+        )
+        # Clean up the generated text to ensure valid JSON
+        try:
+            # Parse the JSON output
+            function_callings = json.loads(
+                generated_text,
+                parse_float=lambda input: float(input),
+                parse_int=lambda input: int(input),
+            )
+        except json.JSONDecodeError:
+            # Fallback if the model doesn't return valid JSON
+            function_callings = None
+        return function_callings
+
     # Function to extract entities from user input
     async def extract_entities(self, user_input):
         # System prompt for entity extraction
-        context = EntityContext(generator=self.generator)
+        context = EntityPromptBuilder(generator=self.generator)
         try:
             # Use regex to extract the JSON part from the generated text
             generated_text = await context.generate_text(user_input)
             # Parse the JSON output
-            entities = json.loads(generated_text)
+            entities = json.loads(
+                generated_text,
+                parse_float=lambda input: float(input),
+                parse_int=lambda input: int(input),
+            )
         except json.JSONDecodeError:
             # Fallback if the model doesn't return valid JSON
             entities = {}
@@ -171,15 +191,31 @@ class ZiVAEngine(AsyncAIEngine):
     ):
         # System prompt
         # Initialize context
-        context = ZiVAContext(generator=self.generator, **entities)
+        context = ZiVAPromptBuilder(
+            generator=self.generator,
+            function_tools=[],
+            **entities,
+        )
         await context.load_documents(documents)
         #
         # print(json.dumps(prompt, indent=4, sort_keys=True,))
         # Generate a response using the model
-        generated_text = await context.generate_text(user_input, self.CAPABILITIES)
-        # print(f"prompt {prompt}")
-        # print(generated_text)
-        return generated_text
+        generated_text = await context.generate_text(
+            user_input, self.container.config.capabilities()
+        )
+
+        try:
+            # Use regex to extract the JSON part from the generated text
+            # Parse the JSON output
+            output = json.loads(
+                generated_text,
+                parse_float=lambda input: float(input),
+                parse_int=lambda input: int(input),
+            )
+        except json.JSONDecodeError:
+            # Fallback if the model doesn't return valid JSON
+            output = {"text": generated_text, "bubbles": []}
+        return output
 
     async def retrieve_documents(self, query: str):
         return await asyncio.to_thread(
@@ -191,100 +227,34 @@ class ZiVAEngine(AsyncAIEngine):
             query,
         )
 
-    # Function to handle conversation
-    async def handle_conversation(self, conversation: Conversation):
-        user_chat = conversation.get_last_chat()
-        if user_chat.lang != user_chat.locale and user_chat.locale_content is None:
-            translation_r = TranslationRequest(
-                user_chat.content,
-                source_lang=user_chat.lang,
-                target_lang=user_chat.locale,
-                context={},
-            )
-            user_chat.locale_content = await self.container.translate_uc().execute(
-                translation_r
-            )
-        intent = None
-        # prediction =
-        prediction, new_entities = await asyncio.gather(
-            asyncio.to_thread(
-                lambda text: self.container.intent_detector().predict(text),
-                user_chat.locale_content,
-            ),
-            self.extract_entities(user_chat.content),
-        )
-
-        logger.info(
-            "handle_conversation prompt: %s prediction: %s entities: %s",
-            user_chat.content,
-            prediction,
-            new_entities,
-        )
-        intent = prediction[0]
-        wait = []
-        wait.append(self.container.chat_repo().create(user_chat))
-        # print(json.dumps(conversation.get_chats_for_prompt(), indent=4, sort_keys=True,))
-
-        logger.info("User Input: {}".format(user_chat.content))
-        if new_entities:
-            logger.info("New Entities detected: {}".format(new_entities))
-            for entity_key in new_entities:
-                # print("entity {}".format(entity_key))
-                if new_entities[entity_key] != "N/A":
-                    conversation.set_entity(entity_key, new_entities[entity_key])
-                wait.append(
-                    self.container.entity_repo().update_or_create_by_conversation_id_and_key(
-                        conversation.id, entity_key, new_entities[entity_key]
-                    )
-                )
-        if intent:
-            logger.info("Intent: {}, {}".format(intent, user_chat.content))
-        chats_for_prompt, docs = await asyncio.gather(
-            asyncio.to_thread(
-                functools.partial(conversation.get_chats_for_prompt), last=10
-            ),
-            self.retrieve_documents(user_chat.content),
-        )
-        logger.info("chats_for_prompt length %d", len(chats_for_prompt))
-        logger.info("hybrid rag query docs length %d", len(docs))
-        generated_text, bubbles = await asyncio.gather(
-            self.generate_text(chats_for_prompt, conversation.entities, docs),
-            self.generate_bubbles(
-                chats_for_prompt,
-                conversation.entities,
-                documents=[
-                    self.container.generate_target_lang_doc_uc().execute(
-                        conversation.entities.get("preferred_lang", user_chat.lang),
-                        self.container.supported_languges,
-                    )
-                ],
-            ),
-        )
-        # Create a Chat object
-        bubbles = [
-            ChatBubble(b["label"], b["value"]).setType(b["type"]) for b in bubbles
-        ]
-
+    async def _translate_conversation(
+        self,
+        text: str,
+        bubbles: List[ChatBubble],
+        user_chat: UserChat,
+        preferred_lang: str,
+        conversation_id: str,
+    ):
         if user_chat.lang != user_chat.locale:
             locale_content = ""
-            if isinstance(generated_text, abc.Generator):
-                for chunk in generated_text:
+            if isinstance(text, abc.Generator):
+                for chunk in text:
                     locale_content += chunk
             else:
-                locale_content = generated_text
+                locale_content = text
             generated_lang = await self.container.detect_uc().execute(locale_content)
-            if generated_lang == conversation.entities.get("preferred_lang"):
+            if generated_lang == preferred_lang:
                 ai_chat = (
                     AssistantChat(locale_content, bubbles)
-                    .setBlockId(conversation.id)
+                    .setBlockId(conversation_id)
                     .asText()
-                    .setLang(conversation.entities.get("preferred_lang"))
+                    .setLang(preferred_lang)
                     .setLocale(user_chat.locale)
                 )
             elif generated_lang == user_chat.lang:
                 ai_chat = (
                     AssistantChat(locale_content, bubbles)
-                    .setBlockId(conversation.id)
+                    .setBlockId(conversation_id)
                     .asText()
                     .setLang(user_chat.lang)
                     .setLocale(user_chat.locale)
@@ -302,7 +272,7 @@ class ZiVAEngine(AsyncAIEngine):
                 )
                 ai_chat = (
                     AssistantChat(translated_content, bubbles)
-                    .setBlockId(conversation.id)
+                    .setBlockId(conversation_id)
                     .asText()
                     .setLang(user_chat.lang)
                     .setLocale(user_chat.locale)
@@ -310,21 +280,172 @@ class ZiVAEngine(AsyncAIEngine):
                 )
         else:
             ai_chat = (
-                AssistantChat(generated_text, bubbles)
-                .setBlockId(conversation.id)
+                AssistantChat(text, bubbles)
+                .setBlockId(conversation_id)
                 .setLang(user_chat.lang)
                 .setLocale(user_chat.locale)
-                .setLocaleContent(generated_text)
+                .setLocaleContent(text)
             )
-            if isinstance(generated_text, Generator):
+            if isinstance(text, Generator):
                 ai_chat.asStream()
             else:
                 ai_chat.asText()
 
-        wait.append(self.container.chat_repo().create(ai_chat))
-        conversation.add_chat(ai_chat)
-        await asyncio.gather(*wait)
         return ai_chat
+
+    # Function to handle conversation
+    async def handle_conversation(self, conversation: Conversation):
+        user_chat = conversation.get_last_chat()
+        wait = []
+        if user_chat.lang != user_chat.locale and user_chat.locale_content is None:
+            translation_r = TranslationRequest(
+                user_chat.content,
+                source_lang=user_chat.lang,
+                target_lang=user_chat.locale,
+                context={},
+            )
+            user_chat.locale_content = await self.container.translate_uc().execute(
+                translation_r
+            )
+
+        chats_for_prompt, docs = await asyncio.gather(
+            asyncio.to_thread(
+                functools.partial(conversation.get_chats_for_prompt), last=10
+            ),
+            self.retrieve_documents(user_chat.content),
+        )
+        prediction, new_entities = await asyncio.gather(
+            asyncio.to_thread(
+                lambda text: self.container.intent_detector().predict(text),
+                user_chat.locale_content,
+            ),
+            self.extract_entities(user_chat.content),
+        )
+        preferred_lang = (
+            conversation.entities.get("preferred_lang")
+            if conversation.entities.get("preferred_lang") != "N/A"
+            else user_chat.lang
+        )
+
+        logger.info(
+            "handle_conversation prompt: %s prediction: %s entities: %s",
+            user_chat.content,
+            prediction,
+            new_entities,
+        )
+        intent = prediction[0]
+        wait.append(self.container.chat_repo().create(user_chat))
+        # print(json.dumps(conversation.get_chats_for_prompt(), indent=4, sort_keys=True,))
+
+        logger.info("User Input: {}".format(user_chat.content))
+        if new_entities:
+            logger.info("New Entities detected: {}".format(new_entities))
+            for entity_key in new_entities:
+                # print("entity {}".format(entity_key))
+                if new_entities[entity_key] != "N/A":
+                    conversation.set_entity(entity_key, new_entities[entity_key])
+                wait.append(
+                    self.container.entity_repo().update_or_create_by_conversation_id_and_key(
+                        conversation.id,
+                        entity_key,
+                        new_entities[entity_key],
+                    )
+                )
+        if intent:
+            logger.info("Intent: {}, {}".format(intent, user_chat.content))
+        next_step_context = ""
+        while True:
+            logger.info("chats_for_prompt length %d", len(chats_for_prompt))
+            logger.info("hybrid rag query docs length %d", len(docs))
+            function_calling = await self.generate_function_calling(
+                chats_for_prompt,
+                conversation.entities,
+                [
+                    *docs,
+                    self.container.generate_target_lang_doc_uc().execute(
+                        preferred_lang,
+                        self.container.supported_languges(),
+                    ),
+                    f"\n\nUser PromptBuilder:\n{next_step_context}",
+                ],
+            )
+            if function_calling:
+                logger.info("Function Calling detected: {}".format(function_calling))
+
+                result = await self.container.function_dispatcher().dispatch_function(
+                    session_id=conversation.id,
+                    name=function_calling["name"],
+                    arguments=function_calling["arguments"],
+                )
+                if result and result.next_step:
+                    next_step_context = result.next_step
+                    continue
+                output = await self.generate_text(
+                    chats_for_prompt,
+                    conversation.entities,
+                    [
+                        *docs,
+                        self.container.generate_target_lang_doc_uc().execute(
+                            preferred_lang,
+                            self.container.supported_languges(),
+                        ),
+                        f"\n\nUser PromptBuilder:\n{result.content}",
+                    ],
+                )
+
+                if result:
+                    logger.info("Function Calling result: {}".format(result))
+                    preferred_lang = conversation.entities.get("preferred_lang")
+                    ai_chat = await self._translate_conversation(
+                        output["text"],
+                        (
+                            [
+                                ChatBubble(b["label"], b["value"]).setType(b["type"])
+                                for b in result.bubbles
+                            ]
+                            if result.bubbles
+                            else [
+                                ChatBubble(b["label"], b["value"]).setType(b["type"])
+                                for b in output["bubbles"]
+                            ]
+                        ),
+                        user_chat,
+                        preferred_lang,
+                        conversation_id=conversation.id,
+                    )
+                    wait.append(self.container.chat_repo().create(ai_chat))
+                    conversation.add_chat(ai_chat)
+                    await asyncio.gather(*wait)
+                    return ai_chat
+       
+            output = await self.generate_text(
+                chats_for_prompt,
+                conversation.entities,
+                [
+                    *docs,
+                    self.container.generate_target_lang_doc_uc().execute(
+                        preferred_lang,
+                        self.container.supported_languges(),
+                    ),
+                ],
+            )
+
+            # Create a Chat object
+            bubbles = [
+                ChatBubble(b["label"], b["value"]).setType(b["type"])
+                for b in output["bubbles"]
+            ]
+            ai_chat = await self._translate_conversation(
+                output["text"],
+                bubbles,
+                user_chat,
+                preferred_lang,
+                conversation_id=conversation.id,
+            )
+            wait.append(self.container.chat_repo().create(ai_chat))
+            conversation.add_chat(ai_chat)
+            await asyncio.gather(*wait)
+            return ai_chat
 
     async def send_message(self, message: str, conversation: Conversation):
         # Send a POST request to the /chat endpoint

@@ -1,9 +1,9 @@
 from collections import abc
-from ...domain.models.context import AsyncContext
+from ...domain.models.prompt_builder import AsyncPromptBuilder
 import json
 import re
 from ..logger import logger
-class EntityContext(AsyncContext): 
+class EntityPromptBuilder(AsyncPromptBuilder): 
     async def generate_text(self, user_input = []) -> str:
         system_prompt = await self.get_system_prompt()
         logger.info("System Input: {}".format(system_prompt))

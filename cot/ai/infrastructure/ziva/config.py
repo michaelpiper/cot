@@ -1,5 +1,21 @@
 import os
 
+from .use_cases.authenticate import AuthenticateUseCase
+
+from .security.aes_encryption import AESEncryptor
+from .use_cases.check_auth import CheckAuthUseCase
+
+from .adapters.repositories.mongo_session_repo import MongoSessionRepository
+from .memory.session_management import BankingSessionManager
+
+from .use_cases.get_current_temperature import GetCurrentTemperatureUseCase
+
+from .rag.function_dispatcher import FunctionDispatcher
+
+from .use_cases.check_balance import CheckAccountBalanceUseCase
+
+from .use_cases.transfer_money import TransferMoneyUseCase
+
 from .nlp.entity_extration import EntityExtrationHandler
 from .nlp.multilingual import MultilingualController
 
@@ -46,68 +62,69 @@ from .adapters.repositories.mock_account_repository import (
 
 
 class ZiVAContainer(AsyncContainer):
-    banking_terms = {
-        "account": {
-            "en": "account",
-            "fr": "compte",
-            "es": "cuenta",
-        },
-        "transfer": {
-            "en": "transfer",
-            "fr": "virement",
-            "es": "transferencia",
-        },
-    }
-    supported_languges = [
+    supported_languges = providers.List(
         Language("Nigeria Pidgin", "pcm", "ISO 639-3, no ISO 639-1 exists"),
         Language("Yoruba", "yo", ""),
         Language("English", "en", ""),
         Language("French", "fr", ""),
         Language("Arabic", "ar", ""),
         Language("Hindi (India)", "hi", ""),
-    ]
-    locales = {
-        "en_US": Locale("en_US"),
-        "en_NG": Locale("en_NG"),
-        "fr_FR": Locale("fr_FR"),
-        "ar_AE": Locale("ar_AE"),
-        "yo_NG": Locale("yo_NG"),
-    }
-    locale_settings = {
-        "en_US": LocaleSettings(
-            locale=locales["en_US"],
+    )
+    locales = providers.Dict(
+        en_US=Locale("en_US"),
+        en_NG=Locale("en_NG"),
+        fr_FR=Locale("fr_FR"),
+        ar_AE=Locale("ar_AE"),
+        yo_NG=Locale("yo_NG"),
+        pcm_NG=Locale("pcm_NG"),
+    )
+    locale_settings = providers.Dict(
+        en_US=providers.Singleton(
+            LocaleSettings,
+            locale=locales()["en_US"],
             currency="USD",
             timezone="America/New_York",
         ),
-        "en_NG": LocaleSettings(
-            locale=locales["en_NG"],
+        en_NG=providers.Singleton(
+            LocaleSettings,
+            locale=locales()["en_NG"],
             currency="NGN",
             timezone="Africa/Lagos",
         ),
-        "fr_FR": LocaleSettings(
-            locale=locales["fr_FR"],
+        fr_FR=providers.Singleton(
+            LocaleSettings,
+            locale=locales()["fr_FR"],
             currency="EUR",
             timezone="Europe/Paris",
         ),
-        "ar_AE": LocaleSettings(
-            locale=locales["ar_AE"],
+        ar_AE=providers.Singleton(
+            LocaleSettings,
+            locale=locales()["ar_AE"],
             currency="AED",
             timezone="Asia/Dubai",
         ),
-        "yo_NG": LocaleSettings(
-            locale=locales["yo_NG"],
+        yo_NG=providers.Singleton(
+            LocaleSettings,
+            locale=locales()["yo_NG"],
             currency="NGN",
             timezone="Africa/Lagos",
         ),
-    }
+        pcm_NG=providers.Singleton(
+            LocaleSettings,
+            locale=locales()["pcm_NG"],
+            currency="NGN",
+            timezone="Africa/Lagos",
+        ),
+    )
+
     datasource = providers.Singleton(
         AsyncZiVADatasource, config={"DB_URL": os.getenv("MYSQLITE_DB_NAME")}
     )
     mongo_datasource = providers.Singleton(
-        AsyncZiVAMongoDatasource, config={"MONGO_URI": os.getenv("MONGO_URI")}
+        AsyncZiVAMongoDatasource, config={"MONGO_URI": os.getenv("ZIVA_MONGO_URI")}
     )
-    multilingual_repository = providers.Singleton(
-        AsyncMongoMultilingualRepository, mongo_datasource
+    intent_detector = providers.Singleton(
+        ZiVAIntentDetector,
     )
 
     genai_generator = providers.Singleton(
@@ -115,17 +132,22 @@ class ZiVAContainer(AsyncContainer):
         api_key=AsyncContainer.config.google_api_key,
     )
     detector = providers.Singleton(AsyncZiVALangDetectAdapter, genai_generator)
-    # Use Cases
-    detect_uc = providers.Factory(AsyncDetectLanguageUseCase, detector=detector)
-    translator = providers.Singleton(AsyncZivaTranslateAdapter, genai_generator)
-    translate_uc = providers.Factory(
-        AsyncHandleTranslationUseCase,
-        translator=translator,
-        repository=multilingual_repository,
+    encryptor = providers.Singleton(
+        AESEncryptor,
+        os.getenv("ZIVA_BANKING_ENC_KEY"),
     )
 
+    # Repos 
+    multilingual_repo = providers.Singleton(
+        AsyncMongoMultilingualRepository, mongo_datasource
+    )
     entity_repo = providers.Singleton(ZiVAEntityRepository, datasource)
     chat_repo = providers.Singleton(ZiVAChatRepository, datasource)
+    session_repo = providers.Singleton(
+        MongoSessionRepository,
+        encryptor,
+        mongo_datasource,
+    )
     # Initialize mock repositories
     account_repo = providers.Singleton(
         MockAccountRepository,
@@ -133,11 +155,17 @@ class ZiVAContainer(AsyncContainer):
     customer_repo = providers.Singleton(
         MockCustomerRepository,
     )
-
-    intent_detector = providers.Singleton(
-        ZiVAIntentDetector,
+    # Adapters
+    session_manager = providers.Singleton(BankingSessionManager, session_repo)
+   
+    # Use Cases
+    detect_uc = providers.Factory(AsyncDetectLanguageUseCase, detector=detector)
+    translator = providers.Singleton(AsyncZivaTranslateAdapter, genai_generator)
+    translate_uc = providers.Factory(
+        AsyncHandleTranslationUseCase,
+        translator=translator,
+        repository=multilingual_repo,
     )
-
     # Initialize use cases
     request_account_uc = providers.Singleton(RequestNewAccountUseCase, account_repo)
     inquiry_requirements_uc = providers.Singleton(
@@ -164,8 +192,18 @@ class ZiVAContainer(AsyncContainer):
     entity_extration_controller = providers.Factory(
         EntityExtrationHandler,
     )
-
+    function_calls= providers.List(
+        providers.Factory(AuthenticateUseCase, session_manager= session_manager),
+        providers.Factory(CheckAuthUseCase, session_manager= session_manager),
+        providers.Factory(TransferMoneyUseCase, session_manager= session_manager),
+        providers.Factory(CheckAccountBalanceUseCase, session_manager= session_manager),
+        providers.Factory(GetCurrentTemperatureUseCase, session_manager= session_manager),
+    )
     # Initialize controller
+    function_dispatcher = providers.Factory(
+        FunctionDispatcher,
+        functions=function_calls,
+    )
     rag = providers.Factory(
         ZiVAVectorRetriever,
         os.getenv("ZIVA_MONGO_URI"),
@@ -175,3 +213,4 @@ class ZiVAContainer(AsyncContainer):
         multilingual_controller,
         entity_extration_controller,
     )
+    

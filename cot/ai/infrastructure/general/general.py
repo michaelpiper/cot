@@ -1,9 +1,9 @@
 
 
 import json
-from ...core.contexts import EntityContext
-from .contexts import GeneralContext
-from ...core.contexts import BubbleContext
+from ...core.nlp import EntityPromptBuilder
+from .nlp import GeneralPromptBuilder
+from ...core.nlp import BubblePromptBuilder
 from .....scripts.startup.engine import add_chat_to_db
 from ...domain.models import AssistantChat
 from ...domain.models import Conversation
@@ -13,7 +13,7 @@ from ...core.logger import logger
 class GeneralFrame(Frame):
     def generate_bubbles(self, user_input= [], entities: dict = {} ):
         # Create bubble suggestions
-        context = BubbleContext(
+        context = BubblePromptBuilder(
             generator=self.generator,
             **entities
         )
@@ -30,7 +30,7 @@ class GeneralFrame(Frame):
     # Function to extract entities from user input
     def extract_entities(self, user_input):
         # System prompt for entity extraction
-        context = EntityContext(
+        context = EntityPromptBuilder(
             generator=self.generator
         )
         try:
@@ -47,7 +47,7 @@ class GeneralFrame(Frame):
     def generate_text(self, user_input = [], entities: dict = {}):
         # System prompt
         # Initialize context
-        context = GeneralContext(
+        context = GeneralPromptBuilder(
             generator=self.generator,
             **entities
         )
@@ -83,7 +83,7 @@ class GeneralFrame(Frame):
             logger.info("Intent: {}, {}".format(intent, user_chat.content))
         if intent == "check_balance":
             # from ....intent.check_balance import check_balance
-            # from ....contexts import CheckBalanceContext
+            # from ....contexts import CheckBalancePromptBuilder
             # new_entities = check_balance(**conversation.entities)
             # if new_entities:
             #     for entity_key in new_entities:

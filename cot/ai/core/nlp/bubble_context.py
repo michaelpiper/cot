@@ -1,11 +1,11 @@
 from ...domain.models.chat_prompt import ChatPrompt
-from ...domain.models.context import AsyncContext
+from ...domain.models.prompt_builder import AsyncPromptBuilder
 import json
 import re
 from ... import logger   
 from collections import abc
 
-class BubbleContext(AsyncContext):
+class BubblePromptBuilder(AsyncPromptBuilder):
     async def generate_text(self, user_input = [], capabilities=[]) -> str:
         # Create bubble suggestions
         user_input = ChatPrompt(user_input)
@@ -41,7 +41,7 @@ class BubbleContext(AsyncContext):
         else:
             generated_text = response 
         # generated_text = response[0]["generated_text"][-1]['content'].strip()
-        logger.info("BubbleContext Generated Text: {}".format(generated_text))
+        logger.info("BubblePromptBuilder Generated Text: {}".format(generated_text))
         # Extract the generated text
         # Clean up the generated text to ensure valid JSON
         try:

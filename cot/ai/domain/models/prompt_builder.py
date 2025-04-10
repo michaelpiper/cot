@@ -1,12 +1,12 @@
 from typing import Dict, List
-from ...domain.interfaces.ai_engine import IGenAIAdapter, IAsyncGenAIAdapter
-class Context(dict):
+from ..interfaces.ai_engine import IGenAIAdapter, IAsyncGenAIAdapter
+class PromptBuilder(dict):
     def __init__(
         self,
         generator: IGenAIAdapter,
         **kwargs,
     ):
-        super(Context, self).__init__(**kwargs)  
+        super(PromptBuilder, self).__init__(**kwargs)  
         self.generator = generator 
         self.documents = []
     def generate_text(self, user_input= []) -> str:
@@ -18,13 +18,13 @@ class Context(dict):
     def get_documents (self) -> List[str]:
         return self.documents or []
     
-class AsyncContext(Context):
+class AsyncPromptBuilder(PromptBuilder):
     def __init__(
         self,
         generator: IAsyncGenAIAdapter,
         **kwargs,
     ):
-        super(AsyncContext, self).__init__(generator,**kwargs)   
+        super(AsyncPromptBuilder, self).__init__(generator,**kwargs)   
     async def generate_text(self, user_input= []) -> str:
         return ""
     async def get_system_prompt(self) -> str:
