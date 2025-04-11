@@ -67,4 +67,4 @@ class AuthenticateUseCase(IFunctionCall):
         if otp == "123445" and phone_number is not None:
             session.set('auth.access_token', "testtoken", create_missing=True)
             await self.session_manager.save(session)
-        return FunctionCallResult("",next_step = f"Auth Status -> {"unauthenticated" if not session.get('auth.access_token')else "authenticated -> continue action"}")
+        return FunctionCallResult(next_step = f"Auth Status -> {"unauthenticated" if not session.get('auth.access_token')else "authenticated -> continue action"}")

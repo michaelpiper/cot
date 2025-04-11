@@ -24,6 +24,5 @@ class CheckAuthUseCase(IFunctionCall):
             
        
         return FunctionCallResult(
-            f"",
            next_step= f"Auth Status -> {"unauthenticated" if not session.get('auth.access_token')else "authenticated -> continue action"}\n.",
         )

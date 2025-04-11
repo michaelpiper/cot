@@ -389,7 +389,7 @@ class ZiVAEngine(AsyncAIEngine):
                             preferred_lang,
                             self.container.supported_languges(),
                         ),
-                        f"\n\nUser PromptBuilder:\n{result.content}",
+                        f"\n\nUser PromptBuilder:\n{result.context}",
                     ],
                 )
 
