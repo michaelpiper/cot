@@ -132,7 +132,7 @@ async function onSendMessageButtonClicked(){
                     }
                     button.style.width = "130px"
                     button.textContent = bubble.label;
-                    button.onclick = () => handleButtonClick(bubble.value); // Handle button clicks
+                    button.onclick = () => handleButtonClick(bubble.label); // Handle button clicks
                     buttonContainer.appendChild(button);
                 }
 

@@ -30,7 +30,7 @@ class IAIEngine:
     def start_conversation(self, id: str) -> Self:
         pass
     
-class IAsyncAIEngine:
+class IAsyncAIEngine(IAIEngine):
     generator: IAsyncGenAIAdapter
     datasource: IAsyncDatasource
     async def init(self) -> None:...
