@@ -1,6 +1,8 @@
 from datetime import datetime, timezone
 import json
 from typing import Any, Dict
+
+from .....core.logger import logger
 from .....core.adapters.repositories.mongo_repository import AsyncMongoRepository
 from .....domain.models.session import Session
 from .....domain.interfaces.encryptor import IEncryptor
@@ -19,7 +21,7 @@ class MongoSessionRepository(AsyncMongoRepository, ISessionRepository):
         session = await session_collection.find_one(
             {"session_id": session_id}
         )
-        print("session: {}".format(session))
+        logger.info("session: {}".format(session))
         await self.disconnect(conn=conn)
         if not session:
             return Session(session_id=session_id)
@@ -42,7 +44,7 @@ class MongoSessionRepository(AsyncMongoRepository, ISessionRepository):
     async def _decrypt(self, data: Any) -> Dict:
         
         decrypted_text = self.encrypt.decrypt(data)
-        print("decrypted_text: {}".format(decrypted_text))
+        logger.info("decrypted_text: {}".format(decrypted_text))
         
         try:
             decrypted_data = json.loads(

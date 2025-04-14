@@ -1,3 +1,4 @@
+from ....core.logger import logger
 from ....domain.interfaces.session_repository import ISessionManager
 from ....domain.entities.function_calling import FunctionCallResult
 from ....domain.interfaces.function_calling import IFunctionCall
@@ -22,8 +23,10 @@ class CheckAccountBalanceUseCase(IFunctionCall):
 
     async def check_balance(self, account_type: str = None) -> FunctionCallResult:
         session = await self.session_manager.get(session_id=self.session_id)
-        print("session: {}".format(session))
+        logger.info("session: {}".format(session))
         if not session.get("auth.access_token"):
+            session.set('intent', 'check_account_balance')
+            await  self.session_manager.save(session)
             return FunctionCallResult(
                f"Check Balance -> requires authenticate function call -> ask user to provide phone number you would be sent an otp for authentication",
             )

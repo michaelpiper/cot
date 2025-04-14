@@ -125,6 +125,7 @@ class ZiVAContainer(AsyncContainer):
     )
     intent_detector = providers.Singleton(
         ZiVAIntentDetector,
+        api_key=AsyncContainer.config.google_api_key,
     )
 
     genai_generator = providers.Singleton(
@@ -194,7 +195,7 @@ class ZiVAContainer(AsyncContainer):
     )
     function_calls= providers.List(
         providers.Factory(AuthenticateUseCase, session_manager= session_manager),
-        providers.Factory(CheckAuthUseCase, session_manager= session_manager),
+        # providers.Factory(CheckAuthUseCase, session_manager= session_manager),
         providers.Factory(TransferMoneyUseCase, session_manager= session_manager),
         providers.Factory(CheckAccountBalanceUseCase, session_manager= session_manager),
         providers.Factory(GetCurrentTemperatureUseCase, session_manager= session_manager),

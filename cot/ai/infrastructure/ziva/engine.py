@@ -296,12 +296,14 @@ class ZiVAEngine(AsyncAIEngine):
     # Function to handle conversation
     async def handle_conversation(self, conversation: Conversation):
         user_chat = conversation.get_last_chat()
+        session = await self.container.session_manager().get(conversation.id)
         wait = []
         if user_chat.lang != user_chat.locale and user_chat.locale_content is None:
             translation_r = TranslationRequest(
                 user_chat.content,
                 source_lang=user_chat.lang,
                 target_lang=user_chat.locale,
+                fallback_lang= self.container.config.locale(),
                 context={},
             )
             user_chat.locale_content = await self.container.translate_uc().execute(
@@ -314,13 +316,7 @@ class ZiVAEngine(AsyncAIEngine):
             ),
             self.retrieve_documents(user_chat.content),
         )
-        prediction, new_entities = await asyncio.gather(
-            asyncio.to_thread(
-                lambda text: self.container.intent_detector().predict(text),
-                user_chat.locale_content,
-            ),
-            self.extract_entities(user_chat.content),
-        )
+        new_entities = await self.extract_entities(user_chat.content)
         preferred_lang = (
             conversation.entities.get("preferred_lang")
             if conversation.entities.get("preferred_lang") != "N/A"
@@ -328,12 +324,12 @@ class ZiVAEngine(AsyncAIEngine):
         )
 
         logger.info(
-            "handle_conversation prompt: %s prediction: %s entities: %s",
+            "handle_conversation prompt: %s entities: %s",
             user_chat.content,
-            prediction,
             new_entities,
         )
-        intent = prediction[0]
+        # return AssistantChat(user_chat.content).asText()
+
         wait.append(self.container.chat_repo().create(user_chat))
         # print(json.dumps(conversation.get_chats_for_prompt(), indent=4, sort_keys=True,))
 
@@ -351,9 +347,6 @@ class ZiVAEngine(AsyncAIEngine):
                         new_entities[entity_key],
                     )
                 )
-        if intent:
-            logger.info("Intent: {}, {}".format(intent, user_chat.content))
-        next_step_context = ""
         while True:
             logger.info("chats_for_prompt length %d", len(chats_for_prompt))
             logger.info("hybrid rag query docs length %d", len(docs))
@@ -366,7 +359,6 @@ class ZiVAEngine(AsyncAIEngine):
                         preferred_lang,
                         self.container.supported_languges(),
                     ),
-                    f"\n\nUser PromptBuilder:\n{next_step_context}",
                 ],
             )
             if function_calling:
@@ -377,8 +369,20 @@ class ZiVAEngine(AsyncAIEngine):
                     name=function_calling["name"],
                     arguments=function_calling["arguments"],
                 )
+                logger.info(
+                    "Function Calling {}: context=>{} next_step=>{}".format(
+                        function_calling["name"], result.context, result.next_step
+                    )
+                )
+
                 if result and result.next_step:
-                    next_step_context = result.next_step
+                    conversation.add_chat(
+                        AssistantChat(result.next_step, result.bubbles).asText()
+                    )
+                    chats_for_prompt = await asyncio.to_thread(
+                        functools.partial(conversation.get_chats_for_prompt),
+                        last=10,
+                    )
                     continue
                 output = await self.generate_text(
                     chats_for_prompt,
@@ -417,7 +421,7 @@ class ZiVAEngine(AsyncAIEngine):
                     conversation.add_chat(ai_chat)
                     await asyncio.gather(*wait)
                     return ai_chat
-       
+
             output = await self.generate_text(
                 chats_for_prompt,
                 conversation.entities,

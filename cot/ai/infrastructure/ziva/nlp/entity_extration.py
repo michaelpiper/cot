@@ -1,3 +1,4 @@
+from ....core.logger import logger
 from ..rag.knowledge_graph import IKnowledgeGraph
 class EntityExtrationHandler:
     def __init__( self, kg: IKnowledgeGraph) -> None:
@@ -20,7 +21,7 @@ class EntityExtrationHandler:
         regulations ={}
         for entity in entities:
             regulations[entity] =  context[entity].get("regulations")
-            print(f"ℹ️ Transfers are governed by: {', '.join([r['name'] for r in regulations[entity]])}")
+            logger.info(f"ℹ️ Transfers are governed by: {', '.join([r['name'] for r in regulations[entity]])}")
             # Output: ℹ️ Transfers are governed by: PSD2
 
         return regulations
@@ -41,7 +42,7 @@ class EntityExtrationHandler:
         """
         
         if any(rel["name"] == "money_transfer" for rel in related):
-            print(f"⚠️ Abnormal transaction pattern detected with {transaction['recipient']}")
+            logger.info(f"⚠️ Abnormal transaction pattern detected with {transaction['recipient']}")
             # Output: ⚠️ Abnormal transaction pattern detected with KFC
 
     # Scenario 3: Cross-selling opportunities
@@ -56,5 +57,5 @@ class EntityExtrationHandler:
         """
         
         if services:
-            print(f"💡 Customer might benefit from: {services[0]['name']}")
+            logger.info(f"💡 Customer might benefit from: {services[0]['name']}")
             # Output: 💡 Customer might benefit from: personal_loan

@@ -1,5 +1,7 @@
 from typing import List, Optional
 
+from ....core.logger import logger
+
 from ....domain.interfaces.function_calling import IFunctionCall
 from ....domain.interfaces import IAsyncGenAIAdapter
 from ....domain.models import ChatPrompt
@@ -40,9 +42,9 @@ class GemmaGenAIAdapter(IAsyncGenAIAdapter):
             for function_tool in function_tools:
                 
                 try:
-                    print("{} {}".format(function_tool.__name__, function_tool()))
+                    logger.info("{} {}".format(function_tool.__name__, function_tool()))
                 except Exception as e:
-                    print("{} err: {}".format(function_tool.__name__, e))
+                    logger.info("{} err: {}".format(function_tool.__name__, e))
                 tools.append(types.ToolCodeExecution(function_tool))
             tools.append(
                 types.Tool(function_declarations=[tool.__dict__ for tool in tools])
